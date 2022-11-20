@@ -10,7 +10,12 @@ export class AppComponent implements OnInit {
   public arrIsX: Array<boolean> = [];
   public arrIsY: Array<boolean> = [];
   public board: Element[][] = [];
+  public counterOfChanges: number = 0
+  public resultsOfGame:string = "";
   public isPlayer: boolean = true;
+  private ai: string = '<img src="./assets/dry-clean.png" height="20vh">'
+  private player: string = '<img src="./assets/close.png" height="20vh">'
+  private isWon:boolean = false;
   ngOnInit(){
     const node = document.querySelectorAll(".boxToClick")
     this.arrEl = Array.from(node);
@@ -29,45 +34,173 @@ export class AppComponent implements OnInit {
         counter++
       }
     }
+    
      
   }
-  clickOnBox(id: string){
-    if(this.isPlayer){
-      this.arrIsX[Number(id.slice(-1))-1] = true
-    this.arrEl[Number(id.slice(-1))-1].innerHTML = '<img src="./assets/close.png" height="20vh">'
-    this.isPlayer = false
-    }
-    else{
-      this.arrIsY[Number(id.slice(-1))-1] = true
-    this.arrEl[Number(id.slice(-1))-1].innerHTML = '<img src="./assets/dry-clean.png" height="20vh">'
-    this.isPlayer = true
-    }
-    
-    
-    
- 
-    
-    
-    
-  }
-  isMovesLeft(arr: Element[][]){
-    for(let i = 0; i < 3; i++)
-        for(let j = 0; j < 3; j++)
-            if (arr[i][j].innerHTML == "")
+  isMoveAvailable(board: Element[][]){
+    for (let i = 0; i<3; i++)
+        for (let j = 0; j<3; j++)
+            if (board[i][j].innerHTML=='')
                 return true;
-                 
     return false;
   }
-  giveValue(arr: Element[][]){
+  clickOnBox(id: string){
+    if(!this.isWon){
+    if(this.arrEl[Number(id.slice(-1))-1].innerHTML == ""){
+      if(this.isPlayer){
+        this.arrIsX[Number(id.slice(-1))-1] = true
+        this.arrEl[Number(id.slice(-1))-1].innerHTML = '<img src="./assets/close.png" height="20vh">'
+        
+        if(this.isMoveAvailable(this.board))this.nextMove(this.board,this.counterOfChanges)
+        if(this.isWin(this.board)!=null){
+          let winner = ""
+          switch(this.isWin(this.board)){
+            case 10:
+              winner = 'Wygrał Komputer'
+              break;
+            case -10:
+              winner = 'Wygrał Gracz'
+              break;
+            case 0:
+              winner = 'Remis'
+              break;
+          }
+          this.resultsOfGame = winner
+          this.isWon = true
+        }
+        
+      }
+    }
+  } 
+  }
+  nextMove(board: Element[][],counter: number){
+    if(counter == 0){
+      this.firstCheck(board)
+    }
+    else{
+      let bestScore = -Infinity;//nadanie bestScore najmniejszej wartości, żeby zawsze poznać wartość ruchu
+      let bestMove = {i:0,j:0};
+      for(let i = 0; i < 3; i++){
+        for(let j = 0; j < 3; j++){
+          //czy jest możliwe postawienie O
+          if(board[i][j].innerHTML == ''){
+            board[i][j].innerHTML = this.ai;
+            let score = this.minimax(board,0,false)
+            
+            board[i][j].innerHTML = '';
+            if(score > bestScore){
+              bestScore = score;
+              bestMove = { i, j }
+            }
+          
+          }
+        }
+      }
+      board[bestMove.i][bestMove.j].innerHTML = this.ai;
+      this.isPlayer = true
+    }
+    this.counterOfChanges++;
+  }
+  firstCheck(board: Element[][]) {
+    let bestMove = {i:0,j:0};
+    if(board[1][1].innerHTML == this.player){
+      bestMove = { i:0, j:0 }
+    }
+    else{
+      bestMove = { i:1, j:1 }
+    }
+    board[bestMove.i][bestMove.j].innerHTML = this.ai;
+    this.isPlayer = true;
+  }
+  minimax(board: Element[][],depth: number,isMaximizing: boolean): number {
+    let result = this.isWin(board)
+    // console.log(result)
+    if(result!=null){
+      return result;
+    }
+    if(isMaximizing){
+      let bestScore = -Infinity;
+      for(let i = 0; i < 3; i++){
+        for(let j = 0; j < 3; j++){
+          //czy jest możliwe postawienie O
+          if(board[i][j].innerHTML == ""){
+            board[i][j].innerHTML = this.ai;
+            let score = this.minimax(board,depth+1,false)
+            board[i][j].innerHTML = "";
+            bestScore = Math.max(score-depth,bestScore)
 
+          }
+        }
+      }
+      return bestScore;
+    }
+    else
+    {
+      let bestScore = Infinity;
+      for(let i = 0; i < 3; i++){
+        for(let j = 0; j < 3; j++){
+          //czy jest możliwe postawienie X
+          if(board[i][j].innerHTML == ''){
+            board[i][j].innerHTML = this.player;
+            let score = this.minimax(board,depth+1,true)
+            board[i][j].innerHTML = '';
+            bestScore = Math.min(score,bestScore)
+
+          }
+        }
+      }
+      return bestScore;
+    }
+    
   }
-}
-class Move
-{
-  public row: number;
-  public col: number;
-  constructor(){
-    this.row = 0;
-    this.col = 0;
+  equals3(a:string,b:string,c:string): boolean {
+    return (a==b && b==c && a != "")
   }
+  isWin(board: Element[][]):any {
+    let result = null;
+    //vertical
+    for( let i = 0; i < 3; i++){
+      if(this.equals3(board[0][i].innerHTML,board[1][i].innerHTML,board[2][i].innerHTML)) {
+        result = (board[0][i].innerHTML == this.ai) ? 10: -10
+        
+      }
+    }
+    //horizontal
+    for(let i = 0; i < 3; i++){
+      if(this.equals3(board[i][0].innerHTML,board[i][1].innerHTML,board[i][2].innerHTML)) {
+        result = (board[i][0].innerHTML == this.ai) ? 10: -10
+        
+      }
+    }
+    //diagonal
+    if(this.equals3(board[0][0].innerHTML,board[1][1].innerHTML,board[2][2].innerHTML)){
+      result = (board[0][0].innerHTML == this.ai) ? 10: -10
+      
+    }
+    //antiDiagonal
+    if(this.equals3(board[2][0].innerHTML,board[1][1].innerHTML,board[0][2].innerHTML)){
+      result = (board[2][0].innerHTML == this.ai) ? 10: -10
+      
+    }
+    let openSpots = 0;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (board[i][j].innerHTML == '') {
+        openSpots++;
+        }
+      }
+    }
+
+    if (result == null && openSpots == 0) {
+      return 0;
+    } else {
+      return result;
+    }
+    
+    
+    
+  }
+  
+  
 }
+

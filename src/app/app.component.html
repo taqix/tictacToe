@@ -1,5 +1,5 @@
-<div class="flex justify-center align-center">
-  <div class="grid grid-cols-3 w-6/12 mt-20">
+<div class="flex justify-center align-center flex-col">
+  <div class="grid grid-cols-3 w-6/12 mt-20 self-center">
     <div #box_1 class="boxToClick flex justify-center" (click)="clickOnBox(box_1.id)"></div>
     <div #box_2 class="boxToClick flex justify-center" (click)="clickOnBox(box_2.id)"></div>
     <div #box_3 class="boxToClick flex justify-center" (click)="clickOnBox(box_3.id)"></div>
@@ -10,4 +10,5 @@
     <div #box_8 class="boxToClick flex justify-center" (click)="clickOnBox(box_8.id)"></div>
     <div #box_9 class="boxToClick flex justify-center" (click)="clickOnBox(box_9.id)"></div>
   </div>
+  <div #result class="self-center mt-3">{{resultsOfGame}}</div>
 </div>
