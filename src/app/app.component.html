@@ -1,14 +1,14 @@
 <div class="flex justify-center align-center flex-col">
   <div class="grid grid-cols-3 w-6/12 mt-20 self-center">
-    <div #box_1 class="boxToClick flex justify-center" (click)="clickOnBox(box_1.id)"></div>
-    <div #box_2 class="boxToClick flex justify-center" (click)="clickOnBox(box_2.id)"></div>
-    <div #box_3 class="boxToClick flex justify-center" (click)="clickOnBox(box_3.id)"></div>
-    <div #box_4 class="boxToClick flex justify-center" (click)="clickOnBox(box_4.id)"></div>
-    <div #box_5 class="boxToClick flex justify-center" (click)="clickOnBox(box_5.id)"></div>
-    <div #box_6 class="boxToClick flex justify-center" (click)="clickOnBox(box_6.id)"></div>
-    <div #box_7 class="boxToClick flex justify-center" (click)="clickOnBox(box_7.id)"></div>
-    <div #box_8 class="boxToClick flex justify-center" (click)="clickOnBox(box_8.id)"></div>
-    <div #box_9 class="boxToClick flex justify-center" (click)="clickOnBox(box_9.id)"></div>
+    <div #box_1 class="boxToClick flex justify-center" (click)="clickOnBox(box_1.id)" [style.background]="arrWinEl.includes(box_1) ? 'green' : 'transparent'"></div>
+    <div #box_2 class="boxToClick flex justify-center" (click)="clickOnBox(box_2.id)" [style.background]="arrWinEl.includes(box_2) ? 'green' : 'transparent'"></div>
+    <div #box_3 class="boxToClick flex justify-center" (click)="clickOnBox(box_3.id)" [style.background]="arrWinEl.includes(box_3) ? 'green' : 'transparent'"></div>
+    <div #box_4 class="boxToClick flex justify-center" (click)="clickOnBox(box_4.id)" [style.background]="arrWinEl.includes(box_4) ? 'green' : 'transparent'"></div>
+    <div #box_5 class="boxToClick flex justify-center" (click)="clickOnBox(box_5.id)" [style.background]="arrWinEl.includes(box_5) ? 'green' : 'transparent'" ></div>
+    <div #box_6 class="boxToClick flex justify-center" (click)="clickOnBox(box_6.id)" [style.background]="arrWinEl.includes(box_6) ? 'green' : 'transparent'"></div>
+    <div #box_7 class="boxToClick flex justify-center" (click)="clickOnBox(box_7.id)" [style.background]="arrWinEl.includes(box_7) ? 'green' : 'transparent'"></div>
+    <div #box_8 class="boxToClick flex justify-center" (click)="clickOnBox(box_8.id)" [style.background]="arrWinEl.includes(box_8) ? 'green' : 'transparent'"></div>
+    <div #box_9 class="boxToClick flex justify-center" (click)="clickOnBox(box_9.id)" [style.background]="arrWinEl.includes(box_9) ? 'green' : 'transparent'"></div>
   </div>
-  <div #result class="self-center mt-10 outputText">{{resultsOfGame}}</div>
+  <div #result class="self-center mt-10 outputText" [ngClass]="classOfBox()">{{resultsOfGame}}</div>
 </div>

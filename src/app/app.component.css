@@ -23,3 +23,9 @@
     font-size: 2em;
     font-family: 'Rubik', sans-serif;
 }
+.winner{
+    color:green;
+}
+.drawn{
+    color:black;
+}
